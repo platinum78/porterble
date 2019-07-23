@@ -1,0 +1,76 @@
+pose_estimation:
+    camera:
+        view_angle: [1.1927, 0.7053]
+
+    marker_types:
+        left: 1
+        middle: 2
+        right: 3
+
+    marker_pose:
+        marker2: [0.4, 0.2]
+        marker3: [0.8, 0.0]
+    
+    docking_pose: [0.4, 0.1]
+
+operation:
+    mode: 0         # 0: stop / 1: human tracking / 2: docking / 3: releasing
+
+kinematics:
+    wheel_info:
+        wheel_1:
+            type:                   FIXED
+            origin:                 [0.5, 0.5]
+            radius:                 0.05
+            wheel_orientation:      0
+            roller_orientation:     0.7853981633974483      # pi/4
+            revolute_axis:          0
+            encoder_ppr:            1024
+        
+        wheel_2:
+            type:                   FIXED
+            origin:                 [0.5, 0.5]
+            radius:                 0.05
+            wheel_orientation:      0
+            roller_orientation:     0.7853981633974483      # pi/4
+            revolute_axis:          0
+            encoder_ppr:            1024
+        
+        wheel_3:
+            type:                   FIXED
+            origin:                 [0.5, 0.5]
+            radius:                 0.05
+            wheel_orientation:      0
+            roller_orientation:     0.7853981633974483      # pi/4
+            revolute_axis:          0
+            encoder_ppr:            1024
+        
+        wheel_4:
+            type:                   FIXED
+            origin:                 [0.5, 0.5]
+            radius:                 0.05
+            wheel_orientation:      0
+            roller_orientation:     0.7853981633974483      # pi/4
+            revolute_axis:          0
+            encoder_ppr:            1024
+    
+    solver:
+        precision:                  0.0001
+        max_trial:                  10
+    
+    path_generator:
+        docking_offset:             0.5
+
+communication:
+    arduino:
+        driver:
+            id:                     '55330343434351017072'
+            baudrate:               115200
+        
+        torch:
+            id:                     '75735303831351106241'
+            baudrate:               9600
+        
+        watchdog:
+            id:                     '7543033343735130F041'
+            baudrate:               57600

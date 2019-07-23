@@ -1,0 +1,91 @@
+{
+    "base_settings": {
+        "units": {
+            "length"                    : "meters",
+            "time"                      : "seconds",
+            "mass"                      : "kilograms"
+        },
+
+        "wheel_types"                   : [ "FIXED", "OMNI", "MECANUM", "CASTER" ]
+    },
+
+    "driver": {
+        "wheel_info": {
+            "wheel_1": {
+                "type"                  : "FIXED",
+                "origin"                : [ 0.5, 0.5 ],
+                "radius"                : 0.05,
+                "wheel_orientation"     : 0,
+                "roller_orientation"    : 0,
+                "rev_axis"              : 0,
+                "encoder_ppr"           : 1024
+            },
+
+            "wheel_2": {
+                "type"                  : "FIXED",
+                "origin"                : [ 0.5, 0.5 ],
+                "radius"                : 0.05,
+                "wheel_orientation"     : 0,
+                "roller_orientation"    : 0,
+                "rev_axis"              : 0,
+                "encoder_ppr"           : 1024
+            },
+
+            "wheel_3": {
+                "type"                  : "FIXED",
+                "origin"                : [ 0.5, 0.5 ],
+                "radius"                : 0.05,
+                "wheel_orientation"     : 0,
+                "roller_orientation"    : 0,
+                "rev_axis"              : 0,
+                "encoder_ppr"           : 1024
+            },
+
+            "wheel_4": {
+                "type"                  : "FIXED",
+                "origin"                : [ 0.5, 0.5 ],
+                "radius"                : 0.05,
+                "wheel_orientation"     : 0,
+                "roller_orientation"    : 0,
+                "rev_axis"              : 0,
+                "encoder_ppr"           : 1024
+            }
+        },
+
+        "kinematics": {
+            "solver_precision"          : 1e-4,
+            "solver_max_trial"          : 10
+        },
+
+        "path_generator": {
+            "min_path_radius"           : 0.5,
+            "side_slippable"            : true,
+            "docking_back_offset"       : 0.5
+        },
+
+        "arduino": {
+            "id"                        : "55330343434351017072",
+            "baudrate"                  : 115200
+        }
+    },
+
+    "torch": {
+        "front_light"                   : { "pin": 0,   "dev_id": 0 },
+        "rear_light"                    : { "pin": 0,   "dev_id": 0 },
+        "left_indicator"                : { "pin": 0,   "dev_id": 0 },
+        "right_indicator"               : { "pin": 0,   "dev_id": 0 },
+        "indicator_blink_interval"      : 0.35,
+
+        "arduino": {
+            "serial_number"             : "75735303831351106241",
+            "baudrate"                  : 9600
+        }
+    },
+
+    "watchdog": {
+        "arduino": {
+            "serial_number"             : "7543033343735130F041",
+            "baudrate"                  : 9600
+        }
+    }
+}
