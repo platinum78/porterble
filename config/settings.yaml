@@ -24,7 +24,6 @@ kinematics:
             radius:                 0.05
             wheel_orientation:      0
             roller_orientation:     0.7853981633974483      # pi/4
-            revolute_axis:          0
             encoder_ppr:            1024
         
         wheel_2:
@@ -63,6 +62,8 @@ kinematics:
 
 communication:
     arduino:
+        dev_keyword:                'ACM'
+        id_keyword:                 'ID_SERIAL_SHORT'
         driver:
             id:                     '55330343434351017072'
             baudrate:               115200
@@ -74,3 +75,14 @@ communication:
         watchdog:
             id:                     '7543033343735130F041'
             baudrate:               57600
+    
+    camera:
+        dev_keyword:                'video'
+        id_keyword:                 'ID_MODEL_ID'
+        marker_tracker:
+            id:                     '0812'
+        
+        human_tracker:
+            id:                     '0810'
+            img_width:              640
+            img_height:             480

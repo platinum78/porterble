@@ -31,7 +31,6 @@ class Lightings:
     def set_lights(self, code=0):
         msg = struct.pack("<B", code) + b'\n'
         self.ser.writebytes(msg)
-        # self.ser.readbytes()
 
 
 

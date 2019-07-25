@@ -17,13 +17,14 @@ from .controllers import PIDController
 
 class MecanumWheel:
     def __init__(self, wheel_info_dict):
-        self.offset_x, self.offset_y = wheel_info_dict["origin"]
+        self.origin_x, self.origin_y = wheel_info_dict["origin"]
         self.radius = wheel_info_dict["radius"]
         self.wheel_orientation = wheel_info_dict["wheel_orientation"]
         self.roller_orientation = wheel_info_dict["roller_orientation"]
-        self.alpha = np.arctan2(self.offset_y, self.offset_x)
-        self.beta = self.wheel_orientation - self.alpha
-        self.gamma = self.wheel_orientation - self.roller_orientation
+        self.alpha = None
+        self.beta = None
+        self.gamma = None
+        self.offset_dist = None
 
 class QuadMecanumKinematics:
     def __init__(self, config_dict):
@@ -35,24 +36,24 @@ class QuadMecanumKinematics:
         self.wheel_3 = MecanumWheel(wheel_info_dict["wheel_3"])
         self.wheel_4 = MecanumWheel(wheel_info_dict["wheel_4"])
     
-    def wheel_vel(vx, vy, omega):
+    def compute_wheel_vel(self, vel):
         """
         Wheel velocity calculator.
-        Needs integration with class.
+        Velocity should be given in Pose2D object.
         """
-        a = np.array([ np.pi/4, 3*np.pi/4, 5*np.pi/4, 7*np.pi/4 ])          # Alpha
-        b = np.array([ np.pi/4, -np.pi/4, -3*np.pi/4, 3*np.pi/4 ])          # Beta
-        g = np.array([ np.pi/4, -np.pi/4, -np.pi/4, np.pi/4 ])              # Gamma
-        L = np.array([ np.sqrt(2), np.sqrt(2), np.sqrt(2), np.sqrt(2) ])    # Distance to wheel
-        R = 0.05
+        wheels = [self.wheel_1, self.wheel_2, self.wheel_3, self.wheel_4]
+        velocity = []
+        vx, vy, omega = vel.x, vel.y, vel.theta
+
+        for wheel in wheels:
+            a = wheel.alpha
+            b = wheel.beta
+            g = wheel.gamma
+            L = wheel.offset_dist
+            R = wheel.radius
+            velocity.append((-vx - vy * np.tan(a + b + g) - L * omega * np.sin(b + g) / np.cos(a + b + g)) / (R * np.sin(g) / np.cos(a + b + g)))
         
-        a = np.pi / 4   # Alpha
-        b = np.pi / 4   # Beta
-        g = np.pi / 4   # Gamma
-        L = np.sqrt(2)
-        R = 0.05
-        
-        return (-vx - vy * np.tan(a + b + g) - L * omega * np.sin(b + g) / np.cos(a + b + g)) / (R * np.sin(g) / np.cos(a + b + g))
+        return velocity
 
 class KinematicControllerPID:
     def __init__(self, translation_gains, rotation_gains):
