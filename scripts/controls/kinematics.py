@@ -21,10 +21,11 @@ class MecanumWheel:
         self.radius = wheel_info_dict["radius"]
         self.wheel_orientation = wheel_info_dict["wheel_orientation"]
         self.roller_orientation = wheel_info_dict["roller_orientation"]
-        self.alpha = None
-        self.beta = None
-        self.gamma = None
-        self.offset_dist = None
+        self.alpha = np.arctan2(self.origin_y, self.origin_x)
+        self.beta = self.wheel_orientation - self.alpha
+        self.gamma = self.roller_orientation  self.wheel_orientation
+        self.L = np.sqrt(self.origin_x**2 + self.origin_y**2)
+        self.encoder_ppr = wheel_info_dict["encoder_ppr"]
 
 class QuadMecanumKinematics:
     def __init__(self, config_dict):
@@ -35,7 +36,20 @@ class QuadMecanumKinematics:
         self.wheel_2 = MecanumWheel(wheel_info_dict["wheel_2"])
         self.wheel_3 = MecanumWheel(wheel_info_dict["wheel_3"])
         self.wheel_4 = MecanumWheel(wheel_info_dict["wheel_4"])
-    
+
+    def compute_vel_matrix_coef(self):
+        # Pre-calculate the coefficients for "compute_centerpoint_vel".
+        # Ai, Bi, and Ci are coefficients of vy, omega, and RHS constant, respectively.
+        self.coef_matrix = np.ones([4, 4])
+
+        wheels = [self.wheel_1, self.wheel_2, self.wheel_3, self.wheel_4]
+        for idx in range(len(wheels)):
+            wheel = wheels[idx]
+            a, b, g, L, R = wheel.alpha, wheel.beta, wheel.gamma, wheel.L, wheel.radius
+            self.coef_matrix[idx, 1] = np.tan(a + b + g)
+            self.coef_matrix[idx, 2] = L * np.cos(a) * np.tan(a + b + g) - L * np.sin(a)
+            self.coef_matrix[idx, 3] = R * (np.sin(a + b) - np.tan(a + b + g) * np.cos(a + b))
+
     def compute_wheel_vel(self, vel):
         """
         Wheel velocity calculator.
@@ -54,6 +68,19 @@ class QuadMecanumKinematics:
             velocity.append((-vx - vy * np.tan(a + b + g) - L * omega * np.sin(b + g) / np.cos(a + b + g)) / (R * np.sin(g) / np.cos(a + b + g)))
         
         return velocity
+
+    def compute_centerpoint_vel(self, v1, v2, v3, v4):
+        """
+        Compute the velocity of centerpoint.
+        """
+        vel = np.zeros([3, 1])
+        vel += np.matmul(np.linalg.inv(self.coef_matrix[[0, 1, 2], :3]), self.coef_matrix[[0, 1, 2], 3:4])
+        vel += np.matmul(np.linalg.inv(self.coef_matrix[[0, 1, 3], :3]), self.coef_matrix[[0, 1, 3], 3:4])
+        vel += np.matmul(np.linalg.inv(self.coef_matrix[[0, 2, 3], :3]), self.coef_matrix[[0, 2, 3], 3:4])
+        vel += np.matmul(np.linalg.inv(self.coef_matrix[[1, 2, 3], :3]), self.coef_matrix[[1, 2, 3], 3:4])
+        vel /= 4
+
+        return vel[:, 0].tolist()
 
 class KinematicControllerPID:
     def __init__(self, translation_gains, rotation_gains):

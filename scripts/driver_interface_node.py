@@ -25,10 +25,8 @@ class DriverSerialHandler(SerialHandler):
 
 class DriverInterface:
     def __init__(self):
-        # Initialize node as ROS node, and create subscriber.
+        # Initialize node as ROS node.
         rospy.init_node("driver_interface_node", arg)
-        self.publisher = rospy.Publisher("/vehicle_vel", Pose2D, queue_size=1000)
-        self.subscriber = rospy.Subscriber("/cmd_vel", Pose2D, queue_size=1000, callback=self.cmd_vel_callback)
 
         # Find and open Arduino.
         seek_keyword = rospy.get_param("/communication/arduino/seek_keyword")
@@ -42,16 +40,35 @@ class DriverInterface:
         kinematics_config_dict = rospy.get_param("/kinematics/wheel_info")
         self.quad_mecanum_kinematics = QuadMecanumKinematics(kinematics_config_dict)
 
+        # Create publisher and subscriber.
+        self.publisher = rospy.Publisher("/vehicle_vel", QuadMecanumKinematics, queue_size=1000)
+        self.subscriber = rospy.Subscriber("/cmd_vel", Pose2D, queue_size=1000, callback=self.cmd_vel_callback)
+
+        # Declare variables to store encoder values and velocities.
+        self.time_curr = self.time_ = 0
+        self.t1_curr = self.t2_curr = self.t3_curr = self.t4_curr = 0
+        self.t1_prev = self.t2_prev = self.t3_prev = self.t4_prev = 0
+        self.v1_target = self.v2_target = self.v3_target = self.v4_target = 0
+        self.v1_sysout = self.v2_sysout = self.v3_sysout = self.v4_sysout = 0
+        
     def cmd_vel_callback(self, msg):
         """
         Arg 'msg' is a Pose2D-type.
         """
-        self.v1_request, self.v2_request, self.v3_request, self.v4_request = self.quad_mecanum_kinematics.compute_wheel_vel(msg)
-    
-    def write_velocity(self):
-        msg = QuadMecanumWheel()
-        self.serial.write_velocity(self.v1_request, self.v2_request, self.v3_request, self.v4_request)
-        msg.time_diff, msg.wheel1_val, msg.wheel2_val, msg.wheel3_val, msg.wheel4_val = self.serial.read_response()
+        # Write veocity to Arduino.
+        self.v1_target, self.v2_target, self.v3_target, self.v4_target = self.quad_mecanum_kinematics.compute_wheel_vel(msg)
+        self.serial.write_velocity(self.v1_target, self.v2_target, self.v3_target, self.v4_target)
+
+        # Receive encoder position and calculate rotational velocity of each wheel.
+        self.time_curr, self.t1_curr, self.t2_curr, self.t3_curr, self.t4_curr = self.serial.read_response()
+        self.v1_sysout = (self.t1_curr - self.t1_prev) / (self.time_curr - self.time_prev)
+        self.v2_sysout = (self.t2_curr - self.t2_prev) / (self.time_curr - self.time_prev)
+        self.v3_sysout = (self.t3_curr - self.t3_prev) / (self.time_curr - self.time_prev)
+        self.v4_sysout = (self.t4_curr - self.t4_prev) / (self.time_curr - self.time_prev)
+
+        # Publish received velocity to topic.
+        msg_new = QuadMecanumWheel()
+        msg_new.time_diff, msg_new.wheel1_val, msg_new.wheel2_val, msg_new.wheel3_val, msg_new.wheel4_val = self.serial.read_response()
         self.publisher.publish(msg)
     
     def exec_loop(self, frequency=10):

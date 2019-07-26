@@ -13,6 +13,8 @@ import cv2
 from cv2 import aruco
 import numpy as np
 
+import rospy
+
 class ArucoMarkerDetector:
     def __init__(self, camera_handler, marker1_type, marker2_type, marker3_type):
         # Set the type of marker to use for each position.
@@ -55,17 +57,17 @@ class ArucoMarkerDetector:
                     self.marker3_centerpoint = np.int32(np.average(corners[idx][0], axis=0))
                     self.marker3_detected = True
                 else:
-                    # print_err("Aruco marker detected, but not valid. This input is ignored...")
+                    # rospy.logerr("Aruco marker detected, but not valid. This input is ignored...")
                     pass
                 
             if self.marker1_detected and self.marker2_detected and self.marker3_detected:
-                print_info("All markers properly detected.")
+                rospy.loginfo("All markers properly detected.")
             else:
-                print_err("Incorrect inputs. This iteration will be neglected.")
+                rospy.logerr("Incorrect inputs. This iteration will be neglected.")
                 raise RuntimeError("Incorrect inputs. This iteration will be neglected.")
                 # cv2.waitKey(1)
         else:
-            print_err("No marker is detected.")
+            rospy.logerr("No marker is detected.")
             raise RuntimeError("No marker is detected.")
         
         marker1_theta, marker1_phi = self.camera.pixel_to_spherical_angle(self.marker1_centerpoint[0], self.marker1_centerpoint[1])

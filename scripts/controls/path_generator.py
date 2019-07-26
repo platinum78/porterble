@@ -20,7 +20,7 @@ class PathGenerator:
         # Read path-planner parameters from config_dict.
         self.min_path_radius = config_dict["min_path_radius"]
         self.side_slippable = config_dict["side_slippable"]
-        print_info("Path generator initialized.")
+        rospy.loginfo("Path generator initialized.")
         pass
         
     def generate_path(self, grid_map, init_pose, final_pose, path_resolution=0.05):

@@ -12,7 +12,7 @@
 import os, sys, time
 import numpy as np
 
-class Controller:
+class Controller(object):
     def __init__(self):
         self.target = None
         self.sysout = None
@@ -71,3 +71,7 @@ class PIDController(Controller):
             pid_output = clip_max
         self.output = pid_output
         return self.output
+
+class WaypointController(Controller):
+    def __init__(self):
+        pass

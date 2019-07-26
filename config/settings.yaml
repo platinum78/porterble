@@ -1,57 +1,54 @@
 pose_estimation:
     camera:
-        view_angle: [1.1927, 0.7053]
+        view_angle:                 [1.1927, 0.7053]
 
     marker_types:
-        left: 1
-        middle: 2
-        right: 3
+        left:                       1
+        middle:                     2
+        right:                      3
 
     marker_pose:
-        marker2: [0.4, 0.2]
-        marker3: [0.8, 0.0]
+        marker2:                    [0.4, 0.2]
+        marker3:                    [0.8, 0.0]
     
-    docking_pose: [0.4, 0.1]
-
-operation:
-    mode: 0         # 0: stop / 1: human tracking / 2: docking / 3: releasing
+    docking_pose:                   [0.4, 0.1]
 
 kinematics:
-    wheel_info:
+    wheel_info: # Wheel orientation is the angle starting from the x-axis.
         wheel_1:
             type:                   FIXED
-            origin:                 [0.5, 0.5]
+            origin:                 [0.25, 0.16]
             radius:                 0.05
-            wheel_orientation:      0
-            roller_orientation:     0.7853981633974483      # pi/4
-            encoder_ppr:            1024
+            wheel_orientation:      1.5707963267948966      # pi / 2
+            roller_orientation:     2.356194490192345       # 3*pi / 4
+            encoder_ppr:            247
         
         wheel_2:
             type:                   FIXED
-            origin:                 [0.5, 0.5]
+            origin:                 [-0.25, 0.16]
             radius:                 0.05
-            wheel_orientation:      0
+            wheel_orientation:      1.5707963267948966
             roller_orientation:     0.7853981633974483      # pi/4
             revolute_axis:          0
-            encoder_ppr:            1024
+            encoder_ppr:            247
         
         wheel_3:
             type:                   FIXED
-            origin:                 [0.5, 0.5]
+            origin:                 [-0.25, -0.16]
             radius:                 0.05
-            wheel_orientation:      0
-            roller_orientation:     0.7853981633974483      # pi/4
+            wheel_orientation:      1.5707963267948966
+            roller_orientation:     2.356194490192345       # 3*pi / 4
             revolute_axis:          0
-            encoder_ppr:            1024
+            encoder_ppr:            247
         
         wheel_4:
             type:                   FIXED
-            origin:                 [0.5, 0.5]
+            origin:                 [0.25, -0.16]
             radius:                 0.05
-            wheel_orientation:      0
+            wheel_orientation:      1.5707963267948966
             roller_orientation:     0.7853981633974483      # pi/4
             revolute_axis:          0
-            encoder_ppr:            1024
+            encoder_ppr:            247
     
     solver:
         precision:                  0.0001
@@ -74,13 +71,15 @@ communication:
         
         watchdog:
             id:                     '7543033343735130F041'
-            baudrate:               57600
+            baudrate:               115200
     
     camera:
         dev_keyword:                'video'
         id_keyword:                 'ID_MODEL_ID'
         marker_tracker:
             id:                     '0812'
+            img_width:              1280
+            img_height:             720
         
         human_tracker:
             id:                     '0810'

@@ -32,8 +32,12 @@ class WatchdogSerialHandler(SerialHandler):
     
     def receive_data(self):
         byte_string = self.ser.readline()
-        self.data = list(struct.unpack("HHHHHHHcc", byte_string))
-        return self.data
+        try:
+            self.range = list(struct.unpack("HHHHHHHcc", byte_string))
+            return self.range
+        except struct.error:
+            rospy.logerr("Serial error. Publishing null values.")
+            return [0] * 7
 
 
 class WatchdogInterfaceNode:
@@ -47,7 +51,7 @@ class WatchdogInterfaceNode:
         id_keyword = rospy.get_param("/communication/arduino/id_keyword")
         arduino_id = rospy.get_param("/communication/arduino/watchdog/id")
         rospy.loginfo(arduino_id)
-        self.port_name = query_arduino(seek_keyword, arduino_id)
+        self.port_name = query_arduino(dev_keyword, id_keyword, arduino_id)
         self.baudrate = rospy.get_param("/communication/arduino/watchdog/baudrate")
         self.serial = WatchdogSerialHandler(self.port_name, self.baudrate)
         rospy.loginfo("Established serial connection with Watchdog Arduino.")

@@ -9,6 +9,9 @@
 ********************************************************************************
 """
 
+import os, sys
+import numpy as np
+
 import rospy
 from geometry_msgs.msg import Pose2D
 
@@ -46,7 +49,7 @@ class MarkerPoseEstimator:
 
         # Verify numerical stability by comparing d1 and d1_.
         if abs(d1 - d1_) > 0.0001:
-            print_err("Solution is numerically unstable. This iteration will be neglected.")
+            rospy.logerr("Solution is numerically unstable. This iteration will be neglected.")
             raise RuntimeError("Solution is numerically unstable. This iteration will be neglected.")
         else:
             mat_A = np.array([[ 2 * x2, 2 * y2 ],
@@ -59,14 +62,14 @@ class MarkerPoseEstimator:
             
             self.offset.x = x
             self.offset.y = y
-            self.offset.t = omega
+            self.offset.theta = omega
         
     def compute_docking_error(self):
         try:
-            self.compute_pose()
+            self.estimate_pose()
             dx = self.docking_pose.x - self.offset.x
             dy = self.docking_pose.y - self.offset.y
-            dt = self.docking_pose.t - self.offset.t
+            dt = self.docking_pose.theta - self.offset.theta
             return Pose2D(dx, dy, dt)
         except:
             rospy.logerr("(%s) Perception error! Publishing null value." % rospy.get_name())
