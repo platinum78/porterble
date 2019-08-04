@@ -16,8 +16,6 @@ from serial.serialutil import SerialException
 
 class SerialHandler(object):
     def __init__(self, port_name, baudrate):
-        self.debug = False
-        self.simulation = False
 
         self.port_name = port_name
         self.baudrate = baudrate
