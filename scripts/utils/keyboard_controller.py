@@ -13,14 +13,20 @@ display = """
 
   This is a keyboard-based controller to maneuver the Porterble Smart Cart.   
   
+
   Arrow Keys: Linear movement.
   Page Up/Down Keys: Angular movement.
+
 
     +----------------------+----------------------+----------------------+    
     |    Axial Velocity    |   Lateral Velocity   |   Angular Velocity   |    
     +----------------------+----------------------+----------------------+    
     |       00.0000 m/s    |       00.0000 m/s    |       00.0000 rad/s  |    
     +----------------------+----------------------+----------------------+    
+
+
+
+
 
 ==============================================================================
 """
@@ -58,36 +64,26 @@ class KeyboardControllerNode(object):
             c = self.stdscr.getch()
             if c == curses.KEY_UP:
                 self.cmd_obj.x += 0.1
-                for x in range(12, 19):
-                    self.pad.addch(13, x, ' ')
-                self.pad.addstr(13, 12, "%7.4f" % self.cmd_obj.x)
-            if c == curses.KEY_DOWN:
+                self.pad.addstr(15, 12, "%7.4f" % self.cmd_obj.x)
+            elif c == curses.KEY_DOWN:
                 self.cmd_obj.x -= 0.1
-                for x in range(12, 19):
-                    self.pad.addch(13, x, ' ')
-                self.pad.addstr(13, 12, "%7.4f" % self.cmd_obj.x)
-            if c == curses.KEY_LEFT:
+                self.pad.addstr(15, 12, "%7.4f" % self.cmd_obj.x)
+            elif c == curses.KEY_LEFT:
                 self.cmd_obj.y -= 0.1
-                for x in range(35, 42):
-                    self.pad.addch(13, x, ' ')
-                self.pad.addstr(13, 35, "%7.4f" % self.cmd_obj.y)
-            if c == curses.KEY_RIGHT:
+                self.pad.addstr(15, 35, "%7.4f" % self.cmd_obj.y)
+            elif c == curses.KEY_RIGHT:
                 self.cmd_obj.y += 0.1
-                for x in range(35, 42):
-                    self.pad.addch(13, x, ' ')
-                self.pad.addstr(13, 35, "%7.4f" % self.cmd_obj.x)
-            if c == curses.KEY_PPAGE:
+                self.pad.addstr(15, 35, "%7.4f" % self.cmd_obj.y)
+            elif c == curses.KEY_PPAGE:
                 self.cmd_obj.theta += 0.1
-                for x in range(58, 65):
-                    self.pad.addch(13, x, ' ')
-                self.pad.addstr(13, 58, "%7.4f" % self.cmd_obj.x)
-            if c == curses.KEY_NPAGE:
+                self.pad.addstr(15, 58, "%7.4f" % self.cmd_obj.theta)
+            elif c == curses.KEY_NPAGE:
                 self.cmd_obj.theta -= 0.1
-                for x in range(58, 65):
-                    self.pad.addch(13, x, ' ')
-                self.pad.addstr(13, 58, "%7.4f" % self.cmd_obj.x)
+                self.pad.addstr(15, 58, "%7.4f" % self.cmd_obj.theta)
+            elif c == ord('Q') or c == ord('q'):
+                self.shutdown_callback()
+                break
             self.pad.refresh(0, 0, 0, 0, 24, 78)
-            time.sleep(0.125)
     
     def shutdown_callback(self):
         self.sigterm.set()

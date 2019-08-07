@@ -21,7 +21,7 @@ kinematics:
             radius:                 0.05
             wheel_orientation:      1.5707963267948966      # pi / 2
             roller_orientation:     2.356194490192345       # 3*pi / 4
-            encoder_ppr:            247
+            encoder_ppr:            494
         
         wheel_2:
             type:                   FIXED
@@ -30,7 +30,7 @@ kinematics:
             wheel_orientation:      1.5707963267948966
             roller_orientation:     0.7853981633974483      # pi/4
             revolute_axis:          0
-            encoder_ppr:            247
+            encoder_ppr:            494
         
         wheel_3:
             type:                   FIXED
@@ -39,7 +39,7 @@ kinematics:
             wheel_orientation:      1.5707963267948966
             roller_orientation:     2.356194490192345       # 3*pi / 4
             revolute_axis:          0
-            encoder_ppr:            247
+            encoder_ppr:            494
         
         wheel_4:
             type:                   FIXED
@@ -48,7 +48,7 @@ kinematics:
             wheel_orientation:      1.5707963267948966
             roller_orientation:     0.7853981633974483      # pi/4
             revolute_axis:          0
-            encoder_ppr:            247
+            encoder_ppr:            494
     
     solver:
         precision:                  0.0001
@@ -61,15 +61,15 @@ communication:
     arduino:
         dev_keyword:                'ACM'
         id_keyword:                 'ID_SERIAL_SHORT'
-        driver:
+        watchdog:   # Old Arduino Uno
             id:                     '55330343434351017072'
             baudrate:               115200
         
-        torch:
+        torch:      # New Arduino Uno
             id:                     '75735303831351106241'
             baudrate:               9600
         
-        watchdog:
+        driver:     # Arduino Mega
             id:                     '7543033343735130F041'
             baudrate:               115200
     

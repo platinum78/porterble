@@ -45,9 +45,9 @@
   * 9바이트 ASCII 문자열
   * (모터 속도: signed short) x 4 + (EOL: \n)
 * 엔코더 Report: driver -> godfather
-  * driver가 측정한 시간의 증분(microseconds)과 4개의 엔코더 값의 변화분을 step 단위로 전송
-  * 13바이트 ASCII 문자열
-  * (시간 증분: unsigned int) + (엔코더 변화분: signed short) x 4 + (EOL: \n)
+  * driver가 측정한 시간의 증분(microseconds)과 4개의 엔코더 값을 step 단위로 전송
+  * 21바이트 ASCII 문자열
+  * (시간 증분: unsigned int) + (엔코더 변화분: signed int) x 4 + (EOL: \n)
 
 #### godfather <-> torch
 * godfather의 요청에만 응답하는 동기적 통신

@@ -23,19 +23,18 @@ class MecanumWheel:
         self.roller_orientation = wheel_info_dict["roller_orientation"]
         self.alpha = np.arctan2(self.origin_y, self.origin_x)
         self.beta = self.wheel_orientation - self.alpha
-        self.gamma = self.roller_orientation  self.wheel_orientation
+        self.gamma = self.roller_orientation - self.wheel_orientation
         self.L = np.sqrt(self.origin_x**2 + self.origin_y**2)
-        self.encoder_ppr = wheel_info_dict["encoder_ppr"]
+        self.encoder_pulse_per_round = wheel_info_dict["encoder_ppr"]
+        self.encoder_pulse_per_rad = self.encoder_pulse_per_round / np.pi / 2
 
 class QuadMecanumKinematics:
     def __init__(self, config_dict):
-        wheel_info_dict = config_dict["wheel_info"]
-
         # Load wheel dimension and allocation information from configuration dict.
-        self.wheel_1 = MecanumWheel(wheel_info_dict["wheel_1"])
-        self.wheel_2 = MecanumWheel(wheel_info_dict["wheel_2"])
-        self.wheel_3 = MecanumWheel(wheel_info_dict["wheel_3"])
-        self.wheel_4 = MecanumWheel(wheel_info_dict["wheel_4"])
+        self.wheel_1 = MecanumWheel(config_dict["wheel_1"])
+        self.wheel_2 = MecanumWheel(config_dict["wheel_2"])
+        self.wheel_3 = MecanumWheel(config_dict["wheel_3"])
+        self.wheel_4 = MecanumWheel(config_dict["wheel_4"])
 
     def compute_vel_matrix_coef(self):
         # Pre-calculate the coefficients for "compute_centerpoint_vel".
@@ -63,9 +62,11 @@ class QuadMecanumKinematics:
             a = wheel.alpha
             b = wheel.beta
             g = wheel.gamma
-            L = wheel.offset_dist
+            L = wheel.L
             R = wheel.radius
-            velocity.append((-vx - vy * np.tan(a + b + g) - L * omega * np.sin(b + g) / np.cos(a + b + g)) / (R * np.sin(g) / np.cos(a + b + g)))
+            wheel_vel = (-vx - vy * np.tan(a + b + g) - L * omega * np.sin(b + g) / np.cos(a + b + g)) / (R * np.sin(g) / np.cos(a + b + g))
+            steps_per_sec = int(wheel_vel * wheel.encoder_pulse_per_rad)
+            velocity.append(steps_per_sec)
         
         return velocity
 
@@ -114,8 +115,6 @@ class KinematicControllerPID:
         # Error-related variables.
         self.error_integral = Pose2D(0, 0, 0)
         self.error_differential = Pose2D(0, 0, 0)
-    
-    def set
 
     def pid_controller(self, pose_target=None, velocity_target=None):
         if pose_target is not None:
