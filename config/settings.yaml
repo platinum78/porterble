@@ -61,6 +61,7 @@ communication:
     arduino:
         dev_keyword:                'ACM'
         id_keyword:                 'ID_SERIAL_SHORT'
+        
         watchdog:   # Old Arduino Uno
             id:                     '55330343434351017072'
             baudrate:               115200
@@ -83,5 +84,9 @@ communication:
         
         human_tracker:
             id:                     '0810'
-            img_width:              640
-            img_height:             480
+            img_width:              960
+            img_height:             540
+    
+    server:
+        ip:                         192.168.0.8
+        port:                       1398

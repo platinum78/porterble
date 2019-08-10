@@ -1,7 +1,10 @@
 <launch>
     <rosparam command="load" file="$(find porterble)/config/settings.yaml" />
-    <!-- <node pkg="porterble" name="pose_estimator_node" type="pose_estimator_node.py" output="screen" /> -->
-    <node pkg="porterble" name="driver_interface_node" type="driver_interface_node.py" output="screen" />
+    <!-- <node pkg="porterble" name="driver_interface_node" type="driver_interface_node.py" output="screen" /> -->
     <!-- <node pkg="porterble" name="watchdog_interface_node" type="watchdog_interface_node.py" output="screen" /> -->
-    <!-- <node pkg="porterble" name="torch_interface_node" type="torch_interface_node.py" /> -->
+    <node pkg="porterble" name="image_transmit_node" type="image_transmit_node.py" output="screen" />
+    <node pkg="porterble" name="human_tracker_server" type="human_tracker_server.py" output="screen" />
+    <!-- <node pkg="porterble" name="pose_estimator_server" type="pose_estimator_server.py" output="screen" /> -->
+    <!-- <node pkg="porterble" name="master_control_node" type="master_control_node.py" output="screen" /> -->
+    <!-- <node pkg="porterble" name="http_watcher_node" type="http_watcher_node.py" output="screen" /> -->
 </launch>

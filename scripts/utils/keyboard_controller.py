@@ -1,5 +1,14 @@
 #!/usr/bin/python
 
+"""
+********************************************************************************
+* Filename      : Kinematic Controller
+* Author        : Susung Park
+* Description   : Kinematics controller for autonomous vehicle.
+* Version       : Beta Version; 08 AUG 2019
+********************************************************************************
+"""
+
 import os, sys
 import curses, time, threading
 
@@ -56,7 +65,7 @@ class KeyboardControllerNode(object):
         self.stdscr.keypad(0)
         curses.endwin()
     
-    def exec_loop(self, rate=10):
+    def exec_loop(self, rate=4):
         self.thread = threading.Thread(target=self.publisher_thread, args=(self.publisher, self.cmd_obj, rate, self.sigterm))
         self.thread.start()
 

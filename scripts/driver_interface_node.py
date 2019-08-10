@@ -1,5 +1,19 @@
 #!/usr/bin/python
 
+"""
+********************************************************************************
+* Filename      : Driver Interface Node
+* Author        : Susung Park
+* Description   : Interface with driver Arduino.
+* Version       : On development; 08 AUG 2019
+
+  driver_interface_node subscribes to the topic '/cmd_vel', computes the
+  velocities of each wheel using 'QuadMecanumKinematics' class, writes them
+  via serial, receives actual encoder values, and publishes them onto
+  '/wheels_vel' topic.
+********************************************************************************
+"""
+
 import os, sys, struct
 from serial.serialutil import SerialException
 
@@ -22,7 +36,7 @@ class DriverSerialHandler(SerialHandler):
 
     def read_response(self):
         byte_string = self.ser.readline()
-        data = struct.unpack("Ihhhhcc", byte_string)
+        data = struct.unpack("Iiiiicc", byte_string)
         return data[:-2]
 
 class DriverInterfaceNode:
@@ -33,10 +47,15 @@ class DriverInterfaceNode:
         # Find and open Arduino.
         dev_keyword = rospy.get_param("/communication/arduino/dev_keyword")
         id_keyword = rospy.get_param("/communication/arduino/id_keyword")
-        # self.port_name = query_arduino(dev_keyword, id_keyword)
-        # self.baudrate = rospy.get_param("/communication/arduino/driver/baudrate")
-        # self.serial = DriverSerialHandler(port_name, baudrate)
-        # rospy.loginfo("Established serial connection with Driver Arduino.")
+        arduino_id = rospy.get_param("/communication/arduino/driver/id")
+        self.port_name = query_arduino(dev_keyword, id_keyword, arduino_id)
+        rospy.loginfo(self.port_name)
+        self.baudrate = rospy.get_param("/communication/arduino/driver/baudrate")
+        # try:
+        self.serial = DriverSerialHandler(self.port_name, self.baudrate)
+        rospy.loginfo("Established serial connection with Driver Arduino.")
+        # except:
+        #     rospy.logerr("Failed to establish serial connection with Driver Arduino.")
 
         # Initialize quad-mecanum-wheel-kinematics solver.
         kinematics_config_dict = rospy.get_param("/kinematics/wheel_info")
@@ -62,10 +81,10 @@ class DriverInterfaceNode:
         # Write veocity to Arduino.
         self.v1_target, self.v2_target, self.v3_target, self.v4_target = self.quad_mecanum_kinematics.compute_wheel_vel(msg)
         rospy.loginfo("%6d, %6d, %6d, %6d" % (self.v1_target, self.v2_target, self.v3_target, self.v4_target))
-        # self.serial.write_velocity(self.v1_target, self.v2_target, self.v3_target, self.v4_target)
+        self.serial.write_velocity(self.v1_target, self.v2_target, self.v3_target, self.v4_target)
 
         # # Receive encoder position and calculate rotational velocity of each wheel.
-        # self.time_curr, self.t1_curr, self.t2_curr, self.t3_curr, self.t4_curr = self.serial.read_response()
+        self.time_curr, self.t1_curr, self.t2_curr, self.t3_curr, self.t4_curr = self.serial.read_response()
         # self.v1_sysout = (self.t1_curr - self.t1_prev) / (self.time_curr - self.time_prev)
         # self.v2_sysout = (self.t2_curr - self.t2_prev) / (self.time_curr - self.time_prev)
         # self.v3_sysout = (self.t3_curr - self.t3_prev) / (self.time_curr - self.time_prev)

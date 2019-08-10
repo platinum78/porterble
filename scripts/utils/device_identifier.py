@@ -25,7 +25,7 @@ def query_arduino(dev_keyword, id_keyword, arduino_id):
         raise RuntimeError("Device not found.")
 
 def query_camera(dev_keyword, id_keyword, camera_id):
-    device_list = os.popen("ls /dev | grep " + keyword).read().strip().split('\n')
+    device_list = os.popen("ls /dev | grep " + dev_keyword).read().strip().split('\n')
     
     for dev in device_list:
         dev_id = os.popen("udevadm info --name=" + dev + " | grep " + id_keyword).read()

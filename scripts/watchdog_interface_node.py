@@ -6,6 +6,9 @@
 * Author        : Susung Park
 * Description   : Watchdog (Arduino) interface node, for sensor data.
 * Version       : Initial release; 07 Jul 2019
+  
+  watchdog_interface_node constantly communicates with Watchdog Arduino,
+  receives sonar range data, and publishes it onto '/ranges' topic.
 ********************************************************************************
 """
 

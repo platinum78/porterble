@@ -1,11 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 
 """
 ********************************************************************************
 * Filename      : Camera Handler
 * Author        : Susung Park
 * Description   : Camera handler.
-* Version       : On development...
+* Version       : Beta Version; 08 AUG 2019
 ********************************************************************************
 """
 
