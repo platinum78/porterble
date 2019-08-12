@@ -55,10 +55,12 @@ add_message_files(
 ## Generate services in the 'srv' folder
 add_service_files (
   FILES
-  Lightings.srv
   PoseByMarker.srv
   ChangeMode.srv
   HumanTracking.srv
+  HumanDetection.srv
+  DetectionImage.srv
+  SetTrackingObj.srv
 )
 
 ## Generate actions in the 'action' folder

@@ -12,6 +12,8 @@ import tensorflow as tf
 import cv2
 import time
 
+tf.logging.set_verbosity(tf.logging.ERROR)
+
 
 class DetectorAPI:
     def __init__(self, path_to_ckpt):
