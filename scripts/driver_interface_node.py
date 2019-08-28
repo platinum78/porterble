@@ -72,7 +72,7 @@ class DriverInterfaceNode:
         self.v1_target = self.v2_target = self.v3_target = self.v4_target = 0
         self.v1_sysout = self.v2_sysout = self.v3_sysout = self.v4_sysout = 0
 
-        rospy.loginfo("Driver (Arduino) interface node is ready.")
+        rospy.loginfo("(driver_interface_node) Driver-Arduino interface node is ready.")
         
     def cmd_vel_callback(self, msg):
         """
@@ -80,11 +80,12 @@ class DriverInterfaceNode:
         """
         # Write veocity to Arduino.
         self.v1_target, self.v2_target, self.v3_target, self.v4_target = self.quad_mecanum_kinematics.compute_wheel_vel(msg)
-        rospy.loginfo("%6d, %6d, %6d, %6d" % (self.v1_target, self.v2_target, self.v3_target, self.v4_target))
+        # print(self.v1_target, self.v2_target, self.v3_target, self.v4_target)
+        # rospy.loginfo("%6d, %6d, %6d, %6d" % (self.v1_target, self.v2_target, self.v3_target, self.v4_target))
         self.serial.write_velocity(self.v1_target, self.v2_target, self.v3_target, self.v4_target)
 
         # # Receive encoder position and calculate rotational velocity of each wheel.
-        self.time_curr, self.t1_curr, self.t2_curr, self.t3_curr, self.t4_curr = self.serial.read_response()
+        # self.time_curr, self.t1_curr, self.t2_curr, self.t3_curr, self.t4_curr = self.serial.read_response()
         # self.v1_sysout = (self.t1_curr - self.t1_prev) / (self.time_curr - self.time_prev)
         # self.v2_sysout = (self.t2_curr - self.t2_prev) / (self.time_curr - self.time_prev)
         # self.v3_sysout = (self.t3_curr - self.t3_prev) / (self.time_curr - self.time_prev)
@@ -108,7 +109,7 @@ class DriverInterfaceNode:
 def main(arg):
     # Get parameters to seek Arduino.
     node = DriverInterfaceNode(arg)
-    node.exec_loop()
+    node.exec_loop(16)
     
 if __name__ == "__main__":
     try:

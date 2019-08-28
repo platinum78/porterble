@@ -1,4 +1,0 @@
-sensor_msgs/Image original_image
----
-sensor_msgs/Image detected_image
-BoundingBox[] boxes

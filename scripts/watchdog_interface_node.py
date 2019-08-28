@@ -36,11 +36,11 @@ class WatchdogSerialHandler(SerialHandler):
     def receive_data(self):
         byte_string = self.ser.readline()
         try:
-            self.range = list(struct.unpack("HHHHHHHcc", byte_string))
+            self.range = list(struct.unpack("HHHHHcc", byte_string))
             return self.range
         except struct.error:
             rospy.logerr("Serial error. Publishing null values.")
-            return [0] * 7
+            return [0] * 5
 
 
 class WatchdogInterfaceNode:
@@ -60,17 +60,17 @@ class WatchdogInterfaceNode:
         rospy.loginfo("Established serial connection with Watchdog Arduino.")
 
         # Prepare storages for measurement values.
-        self.range = [0] * 7
+        self.range = [0] * 5
         
     def publish_range(self):
         self.serial.require_data()
-        self.range = self.serial.receive_data()[:7]
+        self.range = self.serial.receive_data()[:5]
         msg = SonarRange()
         msg.range = self.range
         rospy.loginfo(self.range)
         self.publisher.publish(msg)
     
-    def exec_loop(self, frequency=5):
+    def exec_loop(self, frequency=8):
         loop_rate = rospy.Rate(frequency)
 
         while not rospy.is_shutdown():
@@ -79,7 +79,7 @@ class WatchdogInterfaceNode:
 
 def main():
     interface = WatchdogInterfaceNode()
-    interface.exec_loop(frequency=5)
+    interface.exec_loop(frequency=8)
 
 if __name__ == "__main__":
     try:

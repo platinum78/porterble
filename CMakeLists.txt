@@ -57,10 +57,7 @@ add_service_files (
   FILES
   PoseByMarker.srv
   ChangeMode.srv
-  HumanTracking.srv
-  HumanDetection.srv
-  DetectionImage.srv
-  SetTrackingObj.srv
+  SetManualVel.srv
 )
 
 ## Generate actions in the 'action' folder

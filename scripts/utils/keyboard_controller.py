@@ -43,7 +43,7 @@ display = """
 class KeyboardControllerNode(object):
     def __init__(self):
         rospy.init_node("keyboard_controller_node")
-        self.publisher = rospy.Publisher("/cmd_vel", Pose2D, queue_size=1000)
+        self.publisher = rospy.Publisher("/manual_op_vel", Pose2D, queue_size=1000)
         self.sigterm = threading.Event()
         self.cmd_obj = Pose2D()
         self.init_screen()

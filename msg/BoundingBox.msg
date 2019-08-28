@@ -1,2 +1,0 @@
-Pixel tl
-Pixel dr

@@ -70,10 +70,11 @@ class QuadMecanumKinematics:
         
         return velocity
 
-    def compute_centerpoint_vel(self, v1, v2, v3, v4):
+    def compute_centerpoint_vel(self, dT1, dT2, dT3, dT4):
         """
-        Compute the velocity of centerpoint.
+        Compute the velocity of centerpoint, given dt and encoder differences.
         """
+        
         vel = np.zeros([3, 1])
         vel += np.matmul(np.linalg.inv(self.coef_matrix[[0, 1, 2], :3]), self.coef_matrix[[0, 1, 2], 3:4])
         vel += np.matmul(np.linalg.inv(self.coef_matrix[[0, 1, 3], :3]), self.coef_matrix[[0, 1, 3], 3:4])
@@ -108,14 +109,19 @@ class KinematicControllerPID:
         self.velocity_target = Pose2D(0, 0, 0)
 
         # Timestamps.
-        self.timestamp_curr = 0.0
-        self.timestamp_prev = 0.0
-        self.timestamp_diff = 0.0
+        self.timestamp_curr = 0
+        self.timestamp_prev = 0
+        self.timestamp_diff = 0
 
         # Error-related variables.
         self.error_integral = Pose2D(0, 0, 0)
         self.error_differential = Pose2D(0, 0, 0)
 
-    def pid_controller(self, pose_target=None, velocity_target=None):
+    def exec_pid(self, pose_target=None):
         if pose_target is not None:
-            self.pose_target
+            self.pose_target = pose_target
+        
+        self.timestamp_curr = time.time()
+        self.timestamp_diff = self.timestamp_curr - self.timestamp_prev
+
+        return Pose2D(0, 0, 0)

@@ -1,6 +1,6 @@
 pose_estimation:
     camera:
-        view_angle:                 [1.1927, 0.7053]
+        view_angle:                 [1.176005, 0.707083]
 
     marker_types:
         left:                       1
@@ -8,10 +8,16 @@ pose_estimation:
         right:                      3
 
     marker_pose:
-        marker2:                    [0.4, 0.2]
-        marker3:                    [0.8, 0.0]
+        marker2:                    [0.42, 0.3]
+        marker3:                    [0.84, 0.0]
     
-    docking_pose:                   [0.4, 0.1]
+    docking_pose:                   [0.42, 0.0]
+
+human_tracking:
+    camera:
+        view_angle:                 [1.1927, 0.7053]
+    
+    marker_types:                   [4, 5, 6, 7, 8]
 
 kinematics:
     wheel_info: # Wheel orientation is the angle starting from the x-axis.
@@ -79,14 +85,14 @@ communication:
         id_keyword:                 'ID_MODEL_ID'
         marker_tracker:
             id:                     '0812'
-            img_width:              1280
-            img_height:             720
+            img_width:              640
+            img_height:             360
         
         human_tracker:
             id:                     '0810'
-            img_width:              960
-            img_height:             540
+            img_width:              640
+            img_height:             360
     
     server:
-        ip:                         192.168.0.8
+        ip:                         192.168.4.1
         port:                       1398
